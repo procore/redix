@@ -70,6 +70,8 @@ defmodule Redix.Connection do
 
       {:DOWN, ^request_id, _, _, reason} ->
         exit(reason)
+    after
+      timeout -> raise %Redix.ConnectionError{reason: timeout}
     end
   end
 
