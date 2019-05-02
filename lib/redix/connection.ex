@@ -1,5 +1,6 @@
 defmodule Redix.Connection do
   @moduledoc false
+  require Logger
 
   alias Redix.{ConnectionError, Protocol, SocketOwner, StartOptions}
 
@@ -69,11 +70,8 @@ defmodule Redix.Connection do
         resp
 
       {:DOWN, ^request_id, _, _, reason} ->
+        Logger.error("Exiting from monitor in Redix with reason: #{inspect(reason)}")
         exit(reason)
-    after
-      timeout ->
-        _ = Process.demonitor(request_id, [:flush])
-        {:error, %Redix.ConnectionError{reason: :timeout}}
     end
   end
 
